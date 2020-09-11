@@ -1,8 +1,3 @@
-import requests
-import os
-import sys
-from bs4 import BeautifulSoup as bs
-import webbrowser
 
 #Angela María Rocha Valdez
 
@@ -14,12 +9,43 @@ if inicioRango > finRango:
     inicioRango,finRango = finRango,inicioRango
 for i in range (inicioRango,finRango,1):
     url = "https://www.uanl.mx/noticias/page/"+str(i)
-    pagina = requests.get (url)
+    try: 
+        import requests
+        pagina = requests.get (url)
+    except ImportError:
+        try: 
+            import os
+            try:
+                import sys
+            except ImportError:
+                os.system('pip install sys')
+                print('Installing sys...') 
+                print('Ejecuta de nuevo tu script...') 
+                exit()
+        except ImportError:
+            os.system('pip install request') 
+            print('Installing request...') 
+            print('Ejecuta de nuevo tu script...') 
+            exit()
     if pagina.status_code != 200:
         raise TypeError("Pagina no encontrada")
     else:
-        soup = bs(pagina.content,"html.parser")
-        info = soup.select("h3 a")
+        try: 
+            from bs4 import BeautifulSoup as bs
+            soup = bs(pagina.content,"html.parser")
+        except ImportError: 
+            os.system('pip install request') 
+            print('Installing request...') 
+            print('Ejecuta de nuevo tu script...') 
+            exit()
+        try: 
+            import requests
+            info = soup.select("h3 a")
+        except ImportError: 
+            os.system('pip install request') 
+            print('Installing request...') 
+            print('Ejecuta de nuevo tu script...') 
+            exit()
         for etiqueta in info:
             url2 = etiqueta.get("href")
             pagina2 = requests.get(url2)
@@ -29,7 +55,14 @@ for i in range (inicioRango,finRango,1):
                 for elemento in parrafos:
                     if dependencia in elemento.getText():
                         print ("Abriendo",url2)
-                        webbrowser.open(url2)
+                        try: 
+                            import webbrowser
+                            webbrowser.open(url2)
+                        except ImportError: 
+                            os.system('pip install webbrowser') 
+                            print('Installing webbrowser...') 
+                            print('Ejecuta de nuevo tu script...') 
+                            exit() 
                         break
 # En este código podemos observar al principio los distintos import que son
 # necesarios para ejecutar este scrip; al principio nos muestra un mensaje
